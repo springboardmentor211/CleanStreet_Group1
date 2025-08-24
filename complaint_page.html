@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Complaint Submission Form</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #e6f9f8;
+      font-family: Arial, sans-serif;
+    }
+    .navbar {
+      background: #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .form-container {
+      background: #b3f0ed;
+      padding: 20px;
+      border-radius: 10px;
+      margin: 30px auto;
+      max-width: 1000px;
+    }
+    .form-container h4 {
+      font-weight: bold;
+      color: #1d3557;
+      margin-bottom: 20px;
+    }
+    .btn-save {
+      background-color: #2d6a4f;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+    }
+    .btn-submit {
+      background-color: #0077b6;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+    }
+    .upload-box {
+      text-align: center;
+      border: 2px dashed #333;
+      padding: 15px;
+      border-radius: 8px;
+      background: #fff;
+    }
+    .profile-pic, .profile-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+      <a class="navbar-brand fw-bold text-primary" href="#">Clean<span class="text-success">Street</span></a>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav mx-auto">
+          <li class="nav-item"><a class="nav-link" href="#">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link active fw-bold" href="#">Report Issue</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">View Complaints</a></li>
+          <li class="nav-item"><a class="nav-link" href="#">Admin</a></li>
+        </ul>
+      </div>
+      <div class="d-flex align-items-center">
+        <a href="#profile">
+          <img src="" alt="Profile" class="profile-pic" onerror="this.onerror=null;this.src='https://cdn-icons-png.flaticon.com/512/847/847969.png';">
+        </a>
+        <button class="btn btn-outline-dark">Logout</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h3 class="mt-4">Complaint submission form</h3>
+    <div class="bg-primary text-white p-2 rounded">Report a Civic Issue</div>
+
+    <!-- Form -->
+    <div class="form-container">
+      <h4>Issue Details</h4>
+      <form>
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label>Issue Title</label>
+            <input type="text" class="form-control" placeholder="Enter Issue Title here...">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label>Issue Type</label>
+            <input type="text" class="form-control" placeholder="Enter Issue Type here...">
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label>Address</label>
+          <input type="text" class="form-control" placeholder="Enter Address here...">
+        </div>
+
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label>City</label>
+            <input type="text" class="form-control" placeholder="Enter City here...">
+          </div>
+          <div class="col-md-4 mb-3">
+            <label>State</label>
+            <input type="text" class="form-control" placeholder="Enter State here...">
+          </div>
+          <div class="col-md-4 mb-3">
+            <label>Pincode</label>
+            <input type="text" class="form-control" placeholder="Enter Pincode here...">
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label>Priority Level</label>
+          <select class="form-control">
+            <option value="">Select Priority Level...</option>
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label>Description</label>
+          <textarea class="form-control" rows="3" placeholder="Enter Description here..."></textarea>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label>Phone Number</label>
+            <input type="text" class="form-control" placeholder="Enter Phone number here...">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label>Nearby Landmark</label>
+            <input type="text" class="form-control" placeholder="Enter Nearby Landmark here...">
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label>Location on Map</label>
+          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.086798919872!2d-122.41941508468177!3d37.774929279759095!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x80858064e8c7f1df%3A0x89e6db7a68c249c1!2sCity%20Hall%2C%20San%20Francisco!5e0!3m2!1sen!2sus!4v1612381846230!5m2!1sen!2sus" width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+        </div>
+
+        <div class="mb-3">
+          <label>Upload Photo/Image</label>
+          <div class="upload-box">
+            <input type="file" class="form-control">
+            <small>Click to upload photo</small>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between">
+          <button type="button" class="btn-save">Save Changes</button>
+          <button type="submit" class="btn-submit">Submit Report</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
