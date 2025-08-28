@@ -1,24 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Dashboard from "./pages/Dashboard";
+import EditProfile from "./pages/EditProfile";
+import NewComplaint from "./pages/NewComplaint";
+import ComplaintDetail from "./pages/ComplaintDetail";
+import ViewComplaints from "./pages/ViewComplaints";
 
 function App() {
+  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Navbar />
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Register />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/edit-profile" element={<EditProfile />} />
+        <Route path="/new-complaint" element={<NewComplaint />} />
+        <Route path="/complaints" element={<ViewComplaints />} />
+        <Route path="/complaints/:id" element={<ComplaintDetail />} /> 
+      </Routes>
+      <Footer />
+    </BrowserRouter>
   );
 }
 

@@ -1,0 +1,112 @@
+.complaint-form {
+  background: #e6fffa; /* light aqua */
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin-top: 20px;
+}
+
+.complaint-form h2 {
+  color: #1d2d50;
+  margin-bottom: 15px;
+  border-bottom: 3px solid #2ca58d;
+  padding-bottom: 8px;
+  font-size: 22px;
+}
+
+.complaint-form form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+/* Left column (Issue details) */
+.form-left {
+  flex: 2;
+}
+
+.form-left label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 5px;
+  color: #1d2d50;
+}
+
+.form-left input,
+.form-left textarea,
+.form-left select {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.form-left textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* Right column (map, phone, image) */
+.form-right {
+  flex: 1;
+  background: #f9f9f9;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.form-right label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.form-right input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.map-placeholder {
+  background: #d6f5eb;
+  height: 150px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #555;
+  font-size: 14px;
+  border-radius: 6px;
+}
+
+/* Buttons */
+.complaint-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  width: 100%;
+}
+
+.complaint-buttons button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.complaint-buttons .cancel {
+  background: #ccc;
+  color: #333;
+}
+
+.complaint-buttons .submit {
+  background: #2ca58d;
+  color: #fff;
+}
+
+.complaint-buttons .submit:hover {
+  background: #238471;
+}
