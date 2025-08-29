@@ -35,16 +35,16 @@ export default function Login() {
         </h2>
         <p>Enter your credential to access your account</p>
         <form onSubmit={handleSubmit}>
-          <label>Username or Email</label>
+          <label>Email</label>
           <input name="email" placeholder="Enter your username/email" value={form.email} onChange={handleChange} />
           <label>Password</label>
           <input name="password" type="password" placeholder="Enter your password" value={form.password} onChange={handleChange} />
           <button type="submit">Login</button>
         </form>
-        <p className="small-link">Forgot password?</p>
+        <p> <span className="link" onClick={() => navigate("/forgot-password")}>Forgot password?</span></p>
         <p>
           Don’t have an account?{" "}
-          <span className="link" onClick={() => navigate("/signup")}>Register here</span>
+          <span className="link" onClick={() => navigate("/register")}>Register here</span>
         </p>
       </div>
     </div>
