@@ -1,9 +1,10 @@
 import { useState } from "react";
 import api from "../api/client";
+import "../styles/auth.css";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
-
+    
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -15,7 +16,7 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="auth-page">
+    <div className="auth-container">
       <div className="auth-card">
         <h2>Forgot Password</h2>
         <form onSubmit={handleSubmit}>
@@ -27,6 +28,10 @@ export default function ForgotPassword() {
             required
           />
           <button type="submit">Send Reset Link</button>
+          <p>
+          Don’t have an account?{" "}
+          <span className="link" >Register here</span>
+        </p>
         </form>
       </div>
     </div>
