@@ -1,0 +1,78 @@
+.landing-page {
+  text-align: center;
+  font-family: Arial, sans-serif;
+  color: #1d2d50;
+}
+
+/* Hero Section */
+.hero {
+  background: linear-gradient(135deg, #15B1DB, #AAF4EA);
+  color: #fff;
+  padding: 80px 20px;
+}
+
+.hero h1 {
+  font-size: 48px;
+  margin: 10px 0;
+}
+
+.tagline {
+  font-size: 18px;
+  margin-bottom: 30px;
+}
+
+.cta-buttons .btn {
+  display: inline-block;
+  margin: 0 10px;
+  padding: 12px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.btn.primary {
+  background: #fff;
+  color: #2ca58d;
+}
+
+.btn.secondary {
+  background: #1d2d50;
+  color: #fff;
+}
+
+.btn:hover {
+  opacity: 0.85;
+}
+
+/* Features Section */
+.features {
+  padding: 50px 20px;
+  background: #f9f9f9;
+}
+
+.features h2 {
+  margin-bottom: 30px;
+}
+
+.feature-cards {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.feature-card {
+  background: #fff;
+  padding: 20px;
+  width: 280px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+}
+
+

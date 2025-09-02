@@ -14,7 +14,7 @@ export default function Navbar() {
 
   return (
     <nav className="navbar">
-      <div className="navbar-left" onClick={() => navigate("/dashboard")}>
+      <div className="navbar-left" onClick={() => navigate("/")}>
         <img src={logo} alt="CleanStreet Logo" className="navbar-logo" />
         {/* <span className="navbar-title">CleanStreet</span> */}
       </div>
@@ -31,7 +31,7 @@ export default function Navbar() {
         ) : (
           <>
             <Link to="/login" className="btn-outline">Login</Link>
-            <Link to="/signup" className="btn-primary">Register</Link>
+            <Link to="/register" className="btn-primary">Register</Link>
           </>
         )}
       </div>

@@ -10,7 +10,7 @@ import ComplaintDetail from "./pages/ComplaintDetail";
 import ViewComplaints from "./pages/ViewComplaints";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
-
+import LandingPage from "./pages/Landing"
 
 function AppLayout() {
   const location = useLocation();
@@ -20,6 +20,7 @@ function AppLayout() {
     <>
       {!hideNavbar && <Navbar />}
       <Routes>
+        <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<Dashboard />} />

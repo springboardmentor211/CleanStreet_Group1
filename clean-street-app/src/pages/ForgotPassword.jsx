@@ -1,9 +1,11 @@
 import { useState } from "react";
 import api from "../api/client";
+import { useNavigate } from "react-router-dom";
 import "../styles/auth.css";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
+  const navigate = useNavigate();
     
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,7 +32,7 @@ export default function ForgotPassword() {
           <button type="submit">Send Reset Link</button>
           <p>
           Don’t have an account?{" "}
-          <span className="link" >Register here</span>
+          <span className="link" onClick={() => navigate("/register")} >Register here</span>
         </p>
         </form>
       </div>
