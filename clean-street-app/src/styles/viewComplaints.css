@@ -1,0 +1,84 @@
+.view-complaints h2 {
+  margin-bottom: 20px;
+  color: #1d2d50;
+}
+
+/* Filter buttons */
+.filters {
+  margin-bottom: 20px;
+}
+
+.filters button {
+  padding: 8px 14px;
+  margin-right: 10px;
+  border: 1px solid #2ca58d;
+  border-radius: 5px;
+  background: #fff;
+  color: #2ca58d;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.filters button.active,
+.filters button:hover {
+  background: #2ca58d;
+  color: #fff;
+}
+
+/* Complaints list */
+.complaints-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.complaint-card {
+  background: #fff;
+  padding: 15px;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+.complaint-card h4 {
+  margin-bottom: 6px;
+  color: #1d2d50;
+}
+
+.complaint-card p {
+  margin: 5px 0;
+}
+
+.complaint-card .status {
+  font-size: 13px;
+  color: #555;
+}
+
+.view-btn {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 6px 12px;
+  background: #2ca58d;
+  color: #fff;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 14px;
+  transition: background 0.3s;
+}
+
+.view-btn:hover {
+  background: #238471;
+}
+
+/* No data */
+.no-data {
+  color: #666;
+  font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 800px) {
+  .complaints-list {
+    grid-template-columns: 1fr;
+  }
+}
