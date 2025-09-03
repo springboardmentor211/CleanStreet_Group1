@@ -21,13 +21,7 @@ export default function Navbar() {
 
       <div className="navbar-links">
         {user ? (
-          <>
-            <Link to="/dashboard">Dashboard</Link>
-            <Link to="/new-complaint">Report Issue</Link>
-            <Link to="/complaints">View Complaints</Link>
-            {user.role === "admin" && <Link to="/admin">Admin</Link>}
-            <button className="logout-btn" onClick={handleLogout}>Logout</button>
-          </>
+          <button className="logout-btn" onClick={handleLogout}>Logout</button>
         ) : (
           <>
             <Link to="/login" className="btn-outline">Login</Link>

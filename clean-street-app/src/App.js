@@ -1,3 +1,4 @@
+
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -10,7 +11,12 @@ import ComplaintDetail from "./pages/ComplaintDetail";
 import ViewComplaints from "./pages/ViewComplaints";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+<<<<<<< Updated upstream
 import LandingPage from "./pages/Landing"
+=======
+import HomePage from "./pages/HomePage";
+
+>>>>>>> Stashed changes
 
 function AppLayout() {
   const location = useLocation();
@@ -20,7 +26,11 @@ function AppLayout() {
     <>
       {!hideNavbar && <Navbar />}
       <Routes>
+<<<<<<< Updated upstream
         <Route path="/" element={<LandingPage />} />
+=======
+        <Route path="/" element={<HomePage />} />
+>>>>>>> Stashed changes
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<Dashboard />} />
