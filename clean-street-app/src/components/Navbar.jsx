@@ -1,7 +1,8 @@
 import { Link, useNavigate } from "react-router-dom";
 import useAuthStore from "../store/authStore";
 import "../styles/navbar.css";
-import logo from "../assets/logo.png"; // ✅ adjust path if needed
+import logo from "../assets/logo.png";
+import  "../assets/profile-icon.png";
 
 export default function Navbar() {
   const { user, logout } = useAuthStore();
@@ -27,6 +28,21 @@ export default function Navbar() {
             <Link to="/complaints">View Complaints</Link>
             {user.role === "admin" && <Link to="/admin">Admin</Link>}
             <button className="logout-btn" onClick={handleLogout}>Logout</button>
+            <div className="nav-profile">
+              <Link to="/edit-profile">
+                <img
+  src={
+    user && user._id
+      ? `http://localhost:5000/api/user/profile/photo/${user._id}`
+      : "/profile-icon.png"
+  }
+  alt="profile"
+  className="profile-icon"
+/>
+
+
+              </Link>
+                </div>
           </>
         ) : (
           <>
