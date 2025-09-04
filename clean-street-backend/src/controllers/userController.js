@@ -65,6 +65,9 @@ exports.uploadProfilePhoto = async (req, res) => {
 
     res.json({ msg: "Profile photo saved in DB", user });
   } catch (err) {
+    if (err.message.includes("File too large")) {
+      return res.status(400).json({ error: "File size must be under 2MB" });
+    }
     res.status(500).json({ error: "Server error" });
   }
 };

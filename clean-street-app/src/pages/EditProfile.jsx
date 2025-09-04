@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/client";
 import "../styles/profile.css";
-import  "../assets/profile-icon.png";
+import defaultProfile from "../assets/profile-icon1.png";
 
 export default function EditProfile() {
   const navigate = useNavigate();
@@ -60,7 +60,7 @@ export default function EditProfile() {
         }
       });
       setProfile(res.data);
-      alert("Profile photo updated!");
+      alert("Profile photo updated successfully!");
     } catch (err) {
       alert("Error uploading photo");
     }
@@ -114,7 +114,7 @@ export default function EditProfile() {
   src={
     profile.profilePhoto
       ? `http://localhost:5000/api/user/profile/photo/${profile._id}`
-      : "/profile-icon.png"
+      : defaultProfile
   }
   alt="Profile"
   style={{ width: 100, height: 100, borderRadius: "50%", objectFit: "cover" }}
