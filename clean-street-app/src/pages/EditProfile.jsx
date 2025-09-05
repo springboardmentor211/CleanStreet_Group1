@@ -149,46 +149,77 @@ export default function EditProfile() {
       </div>
 
       <div className="profile-right">
-        <h2>Account Information</h2>
-        <div className="profile-avatar-large">
-          <img
-            src={
-              profile.profilePhoto
-                ? `http://localhost:5000/api/user/profile/photo/${profile._id}`
-                : defaultProfile
-            }
-            alt="Profile"
-            style={{
-              width: 100,
-              height: 100,
-              borderRadius: "50%",
-              objectFit: "cover",
-              marginbottom: 10,
-            }}
-          />
-        </div>
+  <h2 >Account Information</h2>
 
-        <div style={{ marginTop: 20 }}>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => setPhotoFile(e.target.files[0])}
-          />
-          <button type="button" onClick={handlePhotoUpload}>
-            Upload Photo
-          </button>
-        </div>
-        
-        <p>Username = <strong>{profile.name}</strong></p>
-        <p>Email = {profile.email}</p>
-        <p>Phone = {profile.phone}</p>
-        <p>Bio = {profile.bio}</p>
-        <p>Address Line 1 = {profile.addressLine1}</p>
-        <p>Address Line 2 = {profile.addressLine2}</p>
-        <p>State = {profile.city}</p>
-        <p>Dist = {profile.state}</p>
-        <p>Pincode = {profile.pincode}</p>
-      </div>
+  <div className="profile-avatar-section">
+    <div className="profile-avatar-large">
+      <img
+        src={
+          profile.profilePhoto
+            ? `http://localhost:5000/api/user/profile/photo/${profile._id}`
+            : defaultProfile
+        }
+        alt="Profile"
+        className="profile-avatar-img"
+      />
+    </div>
+    <div className="upload-btn-wrap">
+      <label htmlFor="upload-photo" className="upload-btn">
+        Upload Photo
+      </label>
+      <input
+        id="upload-photo"
+        type="file"
+        accept="image/*"
+        onChange={(e) => setPhotoFile(e.target.files[0])}
+        style={{ display: "none" }}
+      />
+      <button type="button" className="save-photo-btn" onClick={handlePhotoUpload}>
+        Save
+      </button>
+    </div>
+  </div>
+
+  <div className="account-info">
+    <div className="info-row">
+      <span className="info-label">Username</span>
+      <span className="info-value">{profile.name}</span>
+    </div>
+    <div className="info-row">
+      <span className="info-label">Email</span>
+      <span className="info-value">{profile.email}</span>
+    </div>
+    <div className="info-row">
+      <span className="info-label">Phone</span>
+      <span className="info-value">{profile.phone}</span>
+    </div>
+    <div className="info-row">
+      <span className="info-label">Bio</span>
+      <span className="info-value">{profile.bio}</span>
+    </div>
+    <div className="info-row">
+      <span className="info-label">Address 1</span>
+      <span className="info-value">{profile.addressLine1}</span>
+    </div>
+    <div className="info-row">
+      <span className="info-label">Address 2</span>
+      <span className="info-value">{profile.addressLine2}</span>
+    </div>
+    <div className="info-row">
+      <span className="info-label">State</span>
+      <span className="info-value">{profile.state}</span>
+    </div>
+    <div className="info-row">
+      <span className="info-label">District</span>
+      <span className="info-value">{profile.district}</span>
+    </div>
+    <div className="info-row">
+      <span className="info-label">Pincode</span>
+      <span className="info-value">{profile.pincode}</span>
+    </div>
+  </div>
+</div>
+
     </div>
   );
 }
