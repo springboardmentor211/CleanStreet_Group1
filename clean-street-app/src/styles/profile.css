@@ -9,27 +9,36 @@
   min-height: 500px;
   overflow: hidden;
   width: 100%;
+  gap: 30px;
+  padding: 20px;
 }
 .profile-left {
   flex: 1 1 50%;
-  padding: 32px 24px 32px 32px;
+  padding: 20px;
   border-right: 2px solid #ececec;
   display: flex;
   flex-direction: column;
   justify-content: center;
   min-width: 0;
   box-sizing: border-box;
+  background: #f9f9f9;
+  border-radius: 16px;
+}
+.profile-left h2 {
+  margin-top: 15px;
+  color: #273469;
+  font-size: 30px;
 }
 .profile-right {
   flex: 1 1 50%;
-  padding: 32px 32px 32px 24px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  min-width: 0;
-  box-sizing: border-box;
-  margin-top: 80px;
+}
+.profile-right h2 {
+  margin-top: 15px;
+  color: #273469;
+  font-size: 30px;
 }
 .profile-form-view {
   display: flex;
@@ -38,26 +47,26 @@
 }
 .profile-form-view label {
   font-weight: 600;
-  color: #22223b;
-  margin-bottom: 2px;
+  color: #273469;
+  margin-top: 10px;
+  display: block;
 }
 .profile-form-view input {
-  background: #ededed;
+  background: #D9D9D9;
   border: none;
-  border-radius: 10px;
-  padding: 8px 16px;
+  border-radius: 8px;
   font-size: 1rem;
   margin-bottom: 8px;
   color: #444;
-  width: 80%;
+  width: 100%;
   max-width: 350px;
   min-width: 180px;
-  box-sizing: border-box;
+  
 }
 .profile-btn-row {
   display: flex;
-  gap: 18px;
-  margin-top: 18px;
+  gap: 80px;
+  margin-top: 15px;
 }
 .profile-btn {
   padding: 8px 22px;
@@ -76,17 +85,10 @@
   background: #3ec6b8;
   color: #fff;
 }
-.profile-btn.done {
-  background: #3ec6b8;
-  color: #fff;
-  margin-left: auto;
-  margin-right: 0;
-}
-.profile-btn.cancel:hover, .profile-btn.save:hover, .profile-btn.done:hover {
-  background: #2ea89a;
-}
+
 .profile-avatar-large {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   margin-bottom: 10px;
