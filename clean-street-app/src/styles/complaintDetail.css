@@ -1,9 +1,10 @@
 .complaint-detail {
+   max-width: 900px;
+  margin: auto;
   background: #fff;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  margin-top: 20px;
+  box-shadow: 0px 2px 8px rgba(0,0,0,0.1);
 }
 
 .complaint-detail h2 {
@@ -23,16 +24,15 @@
 
 /* Vote buttons */
 .vote-buttons {
-  margin: 15px 0;
+  margin-top: 20px;
 }
 
 .vote-buttons button {
-  padding: 8px 14px;
   margin-right: 10px;
-  border: none;
+  padding: 8px 15px;
   border-radius: 5px;
+  border: none;
   cursor: pointer;
-  font-weight: bold;
 }
 
 .vote-buttons button:first-child {
@@ -60,8 +60,9 @@
 }
 
 .comment-form {
+  margin-top: 15px;
   display: flex;
-  margin-top: 10px;
+  gap: 10px;
 }
 
 .comment-form input {
@@ -82,4 +83,18 @@
 
 .comment-form button:hover {
   background: #238471;
+}
+
+.complaint-photos {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 15px;
+}
+.complaint-photo {
+  width: 220px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #ddd;
 }

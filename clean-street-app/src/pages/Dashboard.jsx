@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import api from "../api/client";
 import { getComplaints } from "../api/complaints";
 import "../styles/dashboard.css";
 
@@ -8,6 +9,11 @@ export default function Dashboard() {
   const [complaints, setComplaints] = useState([]);
 
   useEffect(() => {
+    api
+      .get("/complaints")
+      .then((res) => setComplaints(res.data))
+      .catch((err) => console.error("API error:", err));
+
     getComplaints().then((data) => {
       setMetrics({
         total: data.length,
@@ -21,7 +27,7 @@ export default function Dashboard() {
 
   return (
     <div className="container">
-      <h2>User Dashboard</h2>
+      <h2>Complaints Dashboard</h2>
 
       {/* Metrics Section */}
       <div className="metrics">
@@ -52,7 +58,24 @@ export default function Dashboard() {
               <h4>{c.title}</h4>
               <p>{c.description.substring(0, 80)}...</p>
               <p className="status">Status: {c.status}</p>
-              <Link to={`/complaints/${c._id}`} className="view-btn">View Details</Link>
+
+              {/* ✅ Show complaint photos */}
+              {c.photos && c.photos.length > 0 && (
+                <div className="complaint-photos">
+                  {c.photos.map((_, index) => (
+                    <img
+                      key={index}
+                      src={`http://localhost:5000/api/complaints/${c._id}/photo/${index}`}
+                      alt={`Complaint ${index}`}
+                      className="complaint-photo"
+                    />
+                  ))}
+                </div>
+              )}
+
+              <Link to={`/complaints/${c._id}`} className="view-btn">
+                View Details
+              </Link>
             </div>
           ))}
         </div>
