@@ -1,0 +1,90 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #F2F2F2;
+  padding: 10px 30px;
+  border-bottom: 1px solid #ddd;
+}
+
+.navbar-left {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.navbar-logo {
+  height: 40px;
+  margin-right: 10px;
+}
+
+.navbar-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #1d2d50;
+}
+
+.navbar-links {
+  display: flex;
+  gap: 25px;
+  align-items:center;  
+}
+
+.navbar-links a {
+    text-decoration: none;
+  color: #000000;
+  font-weight: 500;
+  
+}
+
+.btn-outline {
+  border: 1px solid #2ca58d;
+  padding: 6px 12px;
+  border-radius: 4px;
+  color: #2ca58d;
+  transition: 0.3s;
+}
+
+.btn-outline:hover {
+  background: #2ca58d;
+  color: #fff;
+}
+
+.btn-primary {
+  background: #2ca58d;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.btn-primary:hover {
+  background: #238471;
+}
+
+.logout-btn {
+  background: #dc3545;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background: #b02a37;
+}
+.nav-profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+}
