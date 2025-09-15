@@ -6,6 +6,19 @@ import { voteComplaint } from "../api/votes";
 import api from "../api/client";
 import "../styles/complaintDetail.css";
 
+// Leaflet imports
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+
+// Fix default icon bug in React-Leaflet
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+});
+
+
 export default function ComplaintDetail() {
   const { id } = useParams(); // complaintId from URL
   const [complaint, setComplaint] = useState(null);
@@ -48,14 +61,25 @@ export default function ComplaintDetail() {
       <p><b>Landmark:</b> {complaint.landmark}</p>
 
       {/* Map */}
-      {complaint.location_coords && (
-        <iframe
-          title="map"
-          width="100%"
-          height="250"
-          style={{ marginTop: "10px", borderRadius: "8px" }}
-          src={`https://www.google.com/maps?q=${complaint.location_coords.lat},${complaint.location_coords.lng}&z=15&output=embed`}
-        />
+      {complaint.location?.lat && complaint.location?.lng && (
+        <div className="map-section">
+          <h3>Location</h3>
+          <MapContainer
+            center={[complaint.location.lat, complaint.location.lng]}
+            zoom={15}
+            style={{ height: "300px", borderRadius: "8px", marginTop: "10px" }}
+          >
+            <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              attribution="&copy; OpenStreetMap contributors"
+            />
+            <Marker position={[complaint.location.lat, complaint.location.lng]}>
+              <Popup>
+                {complaint.title} <br /> {complaint.address}
+              </Popup>
+            </Marker>
+          </MapContainer>
+        </div>
       )}
 
       {/* Multiple Photos */}

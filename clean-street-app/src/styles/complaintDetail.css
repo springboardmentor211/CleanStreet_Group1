@@ -17,9 +17,11 @@
 }
 
 .complaint-img {
-  max-width: 100%;
-  border-radius: 6px;
-  margin: 15px 0;
+  width: 200px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #ccc;
 }
 
 /* Vote buttons */
@@ -89,7 +91,7 @@
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
-  margin-top: 15px;
+  margin-top: 20px;
 }
 .complaint-photo {
   width: 220px;
@@ -97,4 +99,8 @@
   object-fit: cover;
   border-radius: 8px;
   border: 1px solid #ddd;
+}
+
+.map-section {
+  margin-top: 20px;
 }
