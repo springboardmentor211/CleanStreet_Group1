@@ -59,6 +59,13 @@ export default function Dashboard() {
               <p>{c.description.substring(0, 80)}...</p>
               <p className="status">Status: {c.status}</p>
 
+              <div className="votes">
+                <span>👍 {c.upvotes || 0}</span>
+                <span>👎 {c.downvotes || 0}</span>
+              </div>
+
+              
+
               {/* ✅ Show complaint photos */}
               {c.photos && c.photos.length > 0 && (
                 <div className="complaint-photos">

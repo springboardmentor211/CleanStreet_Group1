@@ -1,4 +1,5 @@
 const Complaint = require("../models/Complaint");
+const Vote = require("../models/Vote");
 
 // Create complaint
 exports.createComplaint = async (req, res) => {
@@ -53,9 +54,21 @@ exports.getComplaint = async (req, res) => {
   try {
     const complaint = await Complaint.findById(req.params.id)
       .populate("user_id", "name email role");
-    res.json(complaint);
+
+    if (!complaint) {
+      return res.status(404).json({ error: "Complaint not found" });
+    }
+
+    // Count votes
+    const upvotes = await Vote.countDocuments({ complaint_id: complaint._id, vote_type: "upvote" });
+    const downvotes = await Vote.countDocuments({ complaint_id: complaint._id, vote_type: "downvote" });
+
+    res.json({
+      ...complaint.toObject(),
+      votes: { upvotes, downvotes }
+    });
   } catch (err) {
-    res.status(404).json({ error: "Complaint not found" });
+    res.status(500).json({ error: err.message });
   }
 };
 
