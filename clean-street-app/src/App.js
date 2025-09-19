@@ -11,11 +11,13 @@ import ViewComplaints from "./pages/ViewComplaints";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import LandingPage from "./pages/Landing"
+import AdminLogin from "./pages/AdminLogin";
+import AdminDashboard from "./pages/AdminDashboard";
 
 function AppLayout() {
   const location = useLocation();
 
-  const hideNavbar = ["/login", "/register"].includes(location.pathname);
+  const hideNavbar = ["/login", "/register", "/admin-login"].includes(location.pathname);
   return (
     <>
       {!hideNavbar && <Navbar />}
@@ -30,6 +32,9 @@ function AppLayout() {
         <Route path="/complaints/:id" element={<ComplaintDetail />} />
         <Route path="/forgot-password" element={<ForgotPassword />} /> 
         <Route path="/reset-password/:token" element={<ResetPassword />} />
+        <Route path="/admin-login" element={<AdminLogin />} />
+  <Route path="/admin" element={<AdminDashboard />} />
+  <Route path="/admin-dashboard" element={<AdminDashboard />} />
       </Routes>
       {!hideNavbar && <Footer />}
     </>
