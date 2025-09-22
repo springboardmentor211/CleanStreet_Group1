@@ -1,27 +1,23 @@
 const AdminLog = require("../models/AdminLog");
 const Complaint = require("../models/Complaint");
 
-exports.getMetrics = async (req, res) => {
+exports.adminOverview = async (req, res) => {
   try {
-    const total = await Complaint.countDocuments();
-    const resolved = await Complaint.countDocuments({ status: "resolved" });
-    const inReview = await Complaint.countDocuments({ status: "in_review" });
-    const received = await Complaint.countDocuments({ status: "received" });
+    const totalComplaints = await Complaint.countDocuments();
+    const pendingReview = await Complaint.countDocuments({ status: "in_review" });
+    const resolvedToday = await Complaint.countDocuments({
+      status: "resolved",
+      updated_at: { $gte: new Date().setHours(0, 0, 0, 0) },
+    });
+    const activeUsers = await Complaint.distinct("user_id").then((u) => u.length);
 
-    res.json({ total, resolved, inReview, received });
+    res.json({
+      totalComplaints,
+      pendingReview,
+      activeUsers,
+      resolvedToday,
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
-  }
-};
-
-exports.logAction = async (req, res) => {
-  try {
-    const log = await AdminLog.create({
-      action: req.body.action,
-      user_id: req.user.id,
-    });
-    res.json(log);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
   }
 };
