@@ -5,9 +5,56 @@ import api from "../api/client";
 import "../styles/dashboard.css";
 
 export default function AdminDashboard() {
+  // Sample users for UI testing
+  const sampleUsers = [
+    {
+      _id: 'u1',
+      name: 'John Doe',
+      email: 'john@example.com',
+      role: 'user',
+      joined: '2025-01-10',
+    },
+    {
+      _id: 'u2',
+      name: 'Priya Singh',
+      email: 'priya@example.com',
+      role: 'user',
+      joined: '2025-03-15',
+    },
+    {
+      _id: 'u3',
+      name: 'Ahmed Khan',
+      email: 'ahmed@example.com',
+      role: 'user',
+      joined: '2025-05-22',
+    },
+  ];
+
+  // Sample reports for UI testing
+  const sampleReports = [
+    {
+      _id: 'r1',
+      title: 'Monthly Cleanliness Report',
+      summary: 'City cleanliness improved by 15% in September.',
+      created: '2025-09-22',
+    },
+    {
+      _id: 'r2',
+      title: 'Garbage Collection Issues',
+      summary: 'Overflowing bins reported in 3 sectors.',
+      created: '2025-09-20',
+    },
+    {
+      _id: 'r3',
+      title: 'Streetlight Maintenance',
+      summary: '10 streetlights fixed in Park Avenue.',
+      created: '2025-09-18',
+    },
+  ];
 
   const [activeSection, setActiveSection] = useState('overview');
   const [complaints, setComplaints] = useState([]);
+  const [expandedComplaintId, setExpandedComplaintId] = useState(null);
   const [loadingComplaints, setLoadingComplaints] = useState(false);
   const [users, setUsers] = useState([]);
   const [loadingUsers, setLoadingUsers] = useState(false);
@@ -20,6 +67,37 @@ export default function AdminDashboard() {
     resolvedToday: null,
   });
   const [loadingStats, setLoadingStats] = useState(true);
+
+  // Sample complaints for UI testing
+  const sampleComplaints = [
+    {
+      _id: '1',
+      user: { name: 'John Doe', email: 'john@example.com' },
+      description: 'Overflowing garbage bin at Main Street',
+      location: 'Main Street, Sector 5',
+      status: 'Pending',
+      date: '2025-09-20',
+      photos: [],
+    },
+    {
+      _id: '2',
+      user: { name: 'Priya Singh', email: 'priya@example.com' },
+      description: 'Broken streetlight near Park Avenue',
+      location: 'Park Avenue, Sector 2',
+      status: 'Resolved',
+      date: '2025-09-18',
+      photos: [],
+    },
+    {
+      _id: '3',
+      user: { name: 'Ahmed Khan', email: 'ahmed@example.com' },
+      description: 'Open manhole at Market Road',
+      location: 'Market Road, Sector 7',
+      status: 'In Progress',
+      date: '2025-09-21',
+      photos: [],
+    },
+  ];
 
   useEffect(() => {
     if (activeSection === 'overview') {
@@ -46,22 +124,40 @@ export default function AdminDashboard() {
     if (activeSection === 'complaints') {
       setLoadingComplaints(true);
       api.get('/complaints')
-        .then((res) => setComplaints(res.data || []))
-        .catch(() => setComplaints([]))
+        .then((res) => {
+          if (Array.isArray(res.data) && res.data.length > 0) {
+            setComplaints(res.data);
+          } else {
+            setComplaints(sampleComplaints);
+          }
+        })
+        .catch(() => setComplaints(sampleComplaints))
         .finally(() => setLoadingComplaints(false));
     }
     if (activeSection === 'users') {
       setLoadingUsers(true);
       api.get('/users')
-        .then((res) => setUsers(res.data || []))
-        .catch(() => setUsers([]))
+        .then((res) => {
+          if (Array.isArray(res.data) && res.data.length > 0) {
+            setUsers(res.data);
+          } else {
+            setUsers(sampleUsers);
+          }
+        })
+        .catch(() => setUsers(sampleUsers))
         .finally(() => setLoadingUsers(false));
     }
     if (activeSection === 'reports') {
       setLoadingReports(true);
       api.get('/reports')
-        .then((res) => setReports(res.data || []))
-        .catch(() => setReports([]))
+        .then((res) => {
+          if (Array.isArray(res.data) && res.data.length > 0) {
+            setReports(res.data);
+          } else {
+            setReports(sampleReports);
+          }
+        })
+        .catch(() => setReports(sampleReports))
         .finally(() => setLoadingReports(false));
     }
   }, [activeSection]);
@@ -155,43 +251,75 @@ export default function AdminDashboard() {
               {loadingComplaints ? (
                 <div>Loading complaints...</div>
               ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                <div style={{ background: '#fff', borderRadius: 12, boxShadow: '0 2px 8px #e5e7eb', padding: '0', overflow: 'hidden' }}>
                   {complaints.length === 0 ? (
-                    <div>No complaints found.</div>
+                    <div style={{ padding: '24px' }}>No complaints found.</div>
                   ) : (
-                    complaints.map((c) => (
-                      <div key={c._id} style={{ background: '#fff', borderRadius: 12, boxShadow: '0 2px 8px #e5e7eb', padding: '24px' }}>
-                        {Object.entries(c).map(([key, value]) => {
-                          if (key === 'photos' && Array.isArray(value) && value.length > 0) {
-                            return (
-                              <div key={key} style={{ marginTop: 10 }}>
-                                <b>Photos:</b>
-                                <div style={{ display: 'flex', gap: 10 }}>
-                                  {value.map((_, idx) => (
-                                    <img
-                                      key={idx}
-                                      src={`http://localhost:5000/api/complaints/${c._id}/photo/${idx}`}
-                                      alt={`Complaint ${idx}`}
-                                      style={{ width: 80, height: 80, objectFit: 'cover', borderRadius: 8 }}
-                                    />
-                                  ))}
-                                </div>
-                              </div>
-                            );
-                          }
-                          if (key === 'user' && typeof value === 'object' && value !== null) {
-                            return (
-                              <div key={key}><b>User:</b> {value.name || value.username || 'Unknown'} ({value.email || 'N/A'})</div>
-                            );
-                          }
-                          // Skip _id and __v fields
-                          if (key === '_id' || key === '__v') return null;
+                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                      <thead>
+                        <tr style={{ background: '#f3f4f6', fontWeight: 600 }}>
+                          <th style={{ padding: '16px', borderBottom: '1px solid #e5e7eb', textAlign: 'left' }}>User Name</th>
+                          <th style={{ padding: '16px', borderBottom: '1px solid #e5e7eb', textAlign: 'left' }}>Complaint</th>
+                          <th style={{ padding: '16px', borderBottom: '1px solid #e5e7eb', textAlign: 'left' }}>Location</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {complaints.map((c) => {
+                          const userName = c.user?.name || c.user?.username || 'Unknown';
+                          const complaintText = c.description || c.title || 'No description';
+                          const location = c.location || c.address || 'N/A';
                           return (
-                            <div key={key}><b>{key.charAt(0).toUpperCase() + key.slice(1)}:</b> {String(value)}</div>
+                            <>
+                              <tr
+                                key={c._id}
+                                style={{ cursor: 'pointer', background: expandedComplaintId === c._id ? '#e0e7ff' : '#fff', transition: 'background 0.2s' }}
+                                onClick={() => setExpandedComplaintId(expandedComplaintId === c._id ? null : c._id)}
+                              >
+                                <td style={{ padding: '16px', borderBottom: '1px solid #e5e7eb' }}>{userName}</td>
+                                <td style={{ padding: '16px', borderBottom: '1px solid #e5e7eb' }}>{complaintText}</td>
+                                <td style={{ padding: '16px', borderBottom: '1px solid #e5e7eb' }}>{location}</td>
+                              </tr>
+                              {expandedComplaintId === c._id && (
+                                <tr>
+                                  <td colSpan={3} style={{ padding: '24px', background: '#f9fafb', borderBottom: '1px solid #e5e7eb' }}>
+                                    {/* Full complaint details */}
+                                    {Object.entries(c).map(([key, value]) => {
+                                      if (key === 'photos' && Array.isArray(value) && value.length > 0) {
+                                        return (
+                                          <div key={key} style={{ marginTop: 10 }}>
+                                            <b>Photos:</b>
+                                            <div style={{ display: 'flex', gap: 10 }}>
+                                              {value.map((_, idx) => (
+                                                <img
+                                                  key={idx}
+                                                  src={`http://localhost:5000/api/complaints/${c._id}/photo/${idx}`}
+                                                  alt={`Complaint ${idx}`}
+                                                  style={{ width: 80, height: 80, objectFit: 'cover', borderRadius: 8 }}
+                                                />
+                                              ))}
+                                            </div>
+                                          </div>
+                                        );
+                                      }
+                                      if (key === 'user' && typeof value === 'object' && value !== null) {
+                                        return (
+                                          <div key={key}><b>User:</b> {value.name || value.username || 'Unknown'} ({value.email || 'N/A'})</div>
+                                        );
+                                      }
+                                      // Skip _id and __v fields
+                                      if (key === '_id' || key === '__v') return null;
+                                      return (
+                                        <div key={key}><b>{key.charAt(0).toUpperCase() + key.slice(1)}:</b> {String(value)}</div>
+                                      );
+                                    })}
+                                  </td>
+                                </tr>
+                              )}
+                            </>
                           );
                         })}
-                      </div>
-                    ))
+                      </tbody>
+                    </table>
                   )}
                 </div>
               )}
@@ -224,27 +352,8 @@ export default function AdminDashboard() {
           )}
           {activeSection === 'reports' && (
             <>
-              <div style={{ fontWeight: 700, fontSize: 32, marginBottom: 16 }}>All Reports</div>
-              {loadingReports ? (
-                <div>Loading reports...</div>
-              ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                  {reports.length === 0 ? (
-                    <div>No reports found.</div>
-                  ) : (
-                    reports.map((r, idx) => (
-                      <div key={r._id || idx} style={{ background: '#fff', borderRadius: 12, boxShadow: '0 2px 8px #e5e7eb', padding: '24px' }}>
-                        {Object.entries(r).map(([key, value]) => {
-                          if (key === '_id' || key === '__v') return null;
-                          return (
-                            <div key={key}><b>{key.charAt(0).toUpperCase() + key.slice(1)}:</b> {String(value)}</div>
-                          );
-                        })}
-                      </div>
-                    ))
-                  )}
-                </div>
-              )}
+              <div style={{ fontWeight: 700, fontSize: 32, marginBottom: 16 }}>Reports</div>
+              <div style={{ fontSize: 22, color: '#888', marginTop: 32, textAlign: 'center' }}>Coming soon!</div>
             </>
           )}
         </main>
