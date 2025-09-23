@@ -7,15 +7,15 @@ const {
   updateComplaintStatus,
   getComplaintPhoto,
 } = require("../controllers/complaintController");
-const auth = require("../middleware/auth");
+const { authMiddleware } = require("../middleware/authMiddleware");
 const router = express.Router();
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-router.post("/", auth, upload.array("photos",5),createComplaint);
+router.post("/", authMiddleware, upload.array("photos",5),createComplaint);
 router.get("/", getComplaints);
 router.get("/:id", getComplaint);
-router.patch("/:id/status", auth, updateComplaintStatus);
+router.patch("/:id/status", authMiddleware, updateComplaintStatus);
 router.get("/:id/photo/:index", getComplaintPhoto);
 router.get("/:id/photo/:index", async (req, res) => {
   try {

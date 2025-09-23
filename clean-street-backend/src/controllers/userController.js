@@ -1,10 +1,39 @@
 const User = require("../models/User");
 
+// Helper to convert photo to Base64
+const formatUser = (user) => {
+  if (!user) return null;
+  const obj = user.toObject();
+  delete obj.password;
+
+  if (obj.profilePhoto && obj.profilePhoto.data) {
+    obj.profilePhoto = {
+      contentType: obj.profilePhoto.contentType,
+      base64: obj.profilePhoto.data.toString("base64")
+    };
+  } else {
+    obj.profilePhoto = null;
+  }
+  return obj;
+};
+
+// Get all users (for admin)
+exports.getUsers = async (req, res) => {
+  try {
+    const users = await User.find();
+    const formatted = users.map((u) => formatUser(u));
+    res.json(formatted);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 // ✅ Get logged-in user profile
 exports.getProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select("-password");
-    res.json(user);
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ error: "User not found" });
+    res.json(formatUser(user));
   } catch (err) {
     res.status(500).json({ error: "Server error" });
   }
@@ -15,7 +44,6 @@ exports.updateProfile = async (req, res) => {
   try {
     const updates = req.body;
 
-    // Prevent updating email to duplicate
     if (updates.email) {
       const existing = await User.findOne({ email: updates.email });
       if (existing && existing._id.toString() !== req.user.id) {
@@ -27,7 +55,7 @@ exports.updateProfile = async (req, res) => {
       req.user.id,
       {
         $set: {
-          name: updates.name, // ✅ match your schema
+          name: updates.name,
           phone: updates.phone,
           bio: updates.bio,
           addressLine1: updates.addressLine1,
@@ -38,9 +66,9 @@ exports.updateProfile = async (req, res) => {
         }
       },
       { new: true }
-    ).select("-password");
+    );
 
-    res.json(user);
+    res.json(formatUser(user));
   } catch (err) {
     console.error("Update error:", err);
     res.status(500).json({ error: "Server error" });
@@ -56,14 +84,14 @@ exports.uploadProfilePhoto = async (req, res) => {
       req.user.id,
       {
         profilePhoto: {
-          data: req.file.buffer,           // store binary
-          contentType: req.file.mimetype   // store type
+          data: req.file.buffer,
+          contentType: req.file.mimetype
         }
       },
       { new: true }
-    ).select("-password");
+    );
 
-    res.json({ msg: "Profile photo saved in DB", user });
+    res.json({ msg: "Profile photo saved in DB", user: formatUser(user) });
   } catch (err) {
     if (err.message.includes("File too large")) {
       return res.status(400).json({ error: "File size must be under 2MB" });
@@ -72,7 +100,7 @@ exports.uploadProfilePhoto = async (req, res) => {
   }
 };
 
-// ✅ Serve profile photo
+// ✅ Serve profile photo (legacy fallback)
 exports.getProfilePhoto = async (req, res) => {
   try {
     const user = await User.findById(req.params.id).select("profilePhoto");
@@ -84,5 +112,16 @@ exports.getProfilePhoto = async (req, res) => {
     res.send(user.profilePhoto.data);
   } catch (err) {
     res.status(500).json({ error: "Server error" });
+  }
+};
+
+// Delete a user (admin only)
+exports.deleteUser = async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) return res.status(404).json({ msg: "User not found" });
+    res.json({ msg: "User deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };
