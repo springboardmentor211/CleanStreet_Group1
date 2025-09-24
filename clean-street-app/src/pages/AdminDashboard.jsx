@@ -68,10 +68,16 @@ export default function AdminDashboard() {
     loadComplaints();
   };
 
-  const handleStatusChange = async (id, status) => {
-    await api.patch(`/complaints/${id}/status`, { status });
-    loadComplaints();
-  };
+  const handleStatusChange = async (id, newStatus) => {
+  try {
+    await api.patch(`/complaints/${id}/status`, { status: newStatus });
+    loadComplaints(); // reload complaints after update
+  } catch (err) {
+    console.error("Status update failed:", err);
+    alert("Failed to update complaint status");
+  }
+};
+
 
   const handleViewComplaint = (id) => {
     navigate(`/complaints/${id}`);
@@ -130,12 +136,12 @@ export default function AdminDashboard() {
                 <span>Active Users</span>
               </div>
               <div className="card">
-                🔄 <p>{loadingStats ? "..." : stats.inProgrss ?? "N/A"}</p>
+                🔄 <p>{loadingStats ? "..." : stats.inProgress ?? "N/A"}</p>
                 <span>In Progress</span>
               </div>
               <div className="card">
                 ✔️ <p>{loadingStats ? "..." : stats.resolvedToday ?? "N/A"}</p>
-                <span>Resolved Today</span>
+                <span>Resolved </span>
               </div>
             </div>
           </div>
@@ -170,7 +176,7 @@ export default function AdminDashboard() {
                   )}
                   <div className="actions">
                     <button onClick={() => handleViewComplaint(c._id)}>👁 View</button>
-                    <button onClick={() => handleStatusChange(c._id, "in_review")}>
+                    <button onClick={() => handleStatusChange(c._id, "in_progress")}>
                       🔄 In Progress
                     </button>
                     <button onClick={() => handleStatusChange(c._id, "resolved")}>

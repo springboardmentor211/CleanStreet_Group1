@@ -8,17 +8,16 @@ exports.adminOverview = async (req, res) => {
   try {
     const totalComplaints = await Complaint.countDocuments();
     const pendingReview = await Complaint.countDocuments({ status: "received" });
-    const resolvedToday = await Complaint.countDocuments({
-      status: "resolved",
-      updated_at: { $gte: new Date().setHours(0, 0, 0, 0) }
-    });
+    const inProgress = await Complaint.countDocuments({ status: "in_progress" });
+    const resolvedToday = await Complaint.countDocuments({ status: "resolved" });
     const activeUsers = await User.countDocuments();
 
-    res.json({ totalComplaints, pendingReview, activeUsers, resolvedToday });
+    res.json({ totalComplaints, pendingReview, inProgress, activeUsers, resolvedToday });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
+
 
 // Get all users
 exports.getUsers = async (req, res) => {
