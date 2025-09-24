@@ -105,3 +105,24 @@ exports.getComplaintPhoto = async (req, res) => {
   }
 };
 
+// Delete complaint (admin only)
+// Delete complaint (Admin only for safety)
+exports.deleteComplaint = async (req, res) => {
+  try {
+    const complaint = await Complaint.findById(req.params.id);
+    if (!complaint) {
+      return res.status(404).json({ msg: "Complaint not found" });
+    }
+
+    // Optional: check if user is admin
+    if (req.user.role !== "admin") {
+      return res.status(403).json({ msg: "Only admins can delete complaints" });
+    }
+
+    await complaint.deleteOne();
+    res.json({ msg: "Complaint deleted successfully" });
+  } catch (err) {
+    console.error("Delete complaint error:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+};

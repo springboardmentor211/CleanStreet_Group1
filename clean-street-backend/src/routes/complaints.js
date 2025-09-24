@@ -6,6 +6,7 @@ const {
   getComplaint,
   updateComplaintStatus,
   getComplaintPhoto,
+  deleteComplaint
 } = require("../controllers/complaintController");
 const { authMiddleware } = require("../middleware/authMiddleware");
 const router = express.Router();
@@ -17,6 +18,7 @@ router.get("/", getComplaints);
 router.get("/:id", getComplaint);
 router.patch("/:id/status", authMiddleware, updateComplaintStatus);
 router.get("/:id/photo/:index", getComplaintPhoto);
+router.delete("/:id", authMiddleware, deleteComplaint);
 router.get("/:id/photo/:index", async (req, res) => {
   try {
     const complaint = await Complaint.findById(req.params.id);
