@@ -42,27 +42,21 @@ exports.getAllComplaints = async (req, res) => {
 // Get reports (votes + complaints)
 exports.getReports = async (req, res) => {
   try {
-    const complaints = await Complaint.find().populate("user_id", "name email");
+    const complaints = await Complaint.find()
+      .populate("user_id", "name email")
+      .lean();
 
-    const reportData = await Promise.all(
-      complaints.map(async (c) => {
-        const upvotes = await Vote.countDocuments({ complaint_id: c._id, vote_type: "upvote" });
-        const downvotes = await Vote.countDocuments({ complaint_id: c._id, vote_type: "downvote" });
-        const comments = await Comment.find({ complaint_id: c._id }).populate("user_id", "name email");
+    for (let c of complaints) {
+      c.upvotes = await Vote.countDocuments({ complaint_id: c._id, vote_type: "upvote" });
+      c.downvotes = await Vote.countDocuments({ complaint_id: c._id, vote_type: "downvote" });
 
-        return {
-          _id: c._id,
-          title: c.title,
-          status: c.status,
-          upvotes,
-          downvotes,
-          comments,
-          user: c.user_id
-        };
-      })
-    );
+      // Include comment text + user
+      c.comments = await Comment.find({ complaint_id: c._id })
+        .populate("user_id", "name email")
+        .select("text createdAt user_id");
+    }
 
-    res.json(reportData);
+    res.json(complaints);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

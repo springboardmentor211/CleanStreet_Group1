@@ -63,21 +63,21 @@ export default function AdminDashboard() {
 
   // 🔹 Complaint Actions
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this complaint?")) return;
+    if (!window.confirm("Are you sure you want to delete this complaint?"))
+      return;
     await api.delete(`/complaints/${id}`);
     loadComplaints();
   };
 
   const handleStatusChange = async (id, newStatus) => {
-  try {
-    await api.patch(`/complaints/${id}/status`, { status: newStatus });
-    loadComplaints(); // reload complaints after update
-  } catch (err) {
-    console.error("Status update failed:", err);
-    alert("Failed to update complaint status");
-  }
-};
-
+    try {
+      await api.patch(`/complaints/${id}/status`, { status: newStatus });
+      loadComplaints(); // reload complaints after update
+    } catch (err) {
+      console.error("Status update failed:", err);
+      alert("Failed to update complaint status");
+    }
+  };
 
   const handleViewComplaint = (id) => {
     navigate(`/complaints/${id}`);
@@ -124,7 +124,8 @@ export default function AdminDashboard() {
             <h1>System Overview</h1>
             <div className="cards">
               <div className="card">
-                📋 <p>{loadingStats ? "..." : stats.totalComplaints ?? "N/A"}</p>
+                📋{" "}
+                <p>{loadingStats ? "..." : stats.totalComplaints ?? "N/A"}</p>
                 <span>Total Complaints</span>
               </div>
               <div className="card">
@@ -175,14 +176,23 @@ export default function AdminDashboard() {
                     </div>
                   )}
                   <div className="actions">
-                    <button onClick={() => handleViewComplaint(c._id)}>👁 View</button>
-                    <button onClick={() => handleStatusChange(c._id, "in_progress")}>
+                    <button onClick={() => handleViewComplaint(c._id)}>
+                      👁 View
+                    </button>
+                    <button
+                      onClick={() => handleStatusChange(c._id, "in_progress")}
+                    >
                       🔄 In Progress
                     </button>
-                    <button onClick={() => handleStatusChange(c._id, "resolved")}>
+                    <button
+                      onClick={() => handleStatusChange(c._id, "resolved")}
+                    >
                       ✔️ Resolved
                     </button>
-                    <button className="danger" onClick={() => handleDelete(c._id)}>
+                    <button
+                      className="danger"
+                      onClick={() => handleDelete(c._id)}
+                    >
                       ❌ Delete
                     </button>
                   </div>
@@ -236,17 +246,17 @@ export default function AdminDashboard() {
                   <h3>{r.title}</h3>
                   <p>{r.description}</p>
                   <p>
-                    <b>Upvotes:</b> {r.upvotes} | <b>Downvotes:</b> {r.downvotes}
+                    <b>Upvotes:</b> {r.upvotes} | <b>Downvotes:</b>{" "}
+                    {r.downvotes}
                   </p>
-                  {r.comments?.length > 0 && (
-                    <div className="comments">
-                      <b>Comments:</b>
-                      {r.comments.map((c, idx) => (
-                        <p key={idx}>
-                          {c.user_id?.name || "Unknown"}: {c.text}
-                        </p>
-                      ))}
-                    </div>
+                  {r.comments && r.comments.length > 0 ? (
+                    r.comments.map((com, idx) => (
+                      <div key={idx} style={{ marginTop: 8, paddingLeft: 10 }}>
+                        <b>{com.user_id?.name || "Unknown"}:</b> {com.text}
+                      </div>
+                    ))
+                  ) : (
+                    <div>No comments</div>
                   )}
                 </div>
               ))

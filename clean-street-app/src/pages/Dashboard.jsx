@@ -23,7 +23,7 @@ export default function Dashboard() {
       setMetrics({
         total: data.length,
         pending: data.filter((c) => c.status === "received").length,
-        inReview: data.filter((c) => c.status === "in_review").length,
+        inReview: data.filter((c) => c.status === "in_progress").length,
         resolved: data.filter((c) => c.status === "resolved").length,
       });
       setComplaints(data);
