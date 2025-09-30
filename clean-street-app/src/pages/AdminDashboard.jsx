@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/client";
+import AdminReports from "./AdminReports";
 import "../styles/adminDashboard.css";
 
 export default function AdminDashboard() {
@@ -229,40 +230,8 @@ export default function AdminDashboard() {
         )}
 
         {/* 🔹 Reports */}
-        {activeSection === "reports" && (
-          <div>
-            <h1>All Reports</h1>
-            {loadingReports ? (
-              <p>Loading reports...</p>
-            ) : reports.length === 0 ? (
-              <p>No reports found.</p>
-            ) : (
-              reports.map((r) => (
-                <div
-                  key={r._id}
-                  className="report-card"
-                  onClick={() => handleViewComplaint(r._id)}
-                >
-                  <h3>{r.title}</h3>
-                  <p>{r.description}</p>
-                  <p>
-                    <b>Upvotes:</b> {r.upvotes} | <b>Downvotes:</b>{" "}
-                    {r.downvotes}
-                  </p>
-                  {r.comments && r.comments.length > 0 ? (
-                    r.comments.map((com, idx) => (
-                      <div key={idx} style={{ marginTop: 8, paddingLeft: 10 }}>
-                        <b>{com.user_id?.name || "Unknown"}:</b> {com.text}
-                      </div>
-                    ))
-                  ) : (
-                    <div>No comments</div>
-                  )}
-                </div>
-              ))
-            )}
-          </div>
-        )}
+{activeSection === "reports" && <AdminReports />}
+
       </main>
     </div>
   );

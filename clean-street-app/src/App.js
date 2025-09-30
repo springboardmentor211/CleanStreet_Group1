@@ -14,6 +14,8 @@ import LandingPage from "./pages/Landing"
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import IssueMap from "./pages/IssueMap";
+import AdminReports from "./pages/AdminReports";
+
 
 function AppLayout() {
   const location = useLocation();
@@ -35,7 +37,8 @@ function AppLayout() {
         <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/admin-login" element={<AdminLogin />} />
         <Route path="/map" element={<IssueMap />} />
-  {/* <Route path="/admin" element={<AdminDashboard />} /> */}
+  <Route path="/admin/reports" element={<AdminReports />} />
+
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
       </Routes>
       {!hideNavbar && <Footer />}

@@ -26,6 +26,7 @@ app.use("/api/comments", require("./routes/comments"));
 app.use("/api/user", userRoutes);
 app.use("/api/votes", votesRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/reports", require("./routes/reports"));
 
 
 

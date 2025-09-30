@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { adminOverview, getUsers, getAllComplaints, getReports } = require("../controllers/adminController");
 const { authMiddleware, isAdmin } = require("../middleware/authMiddleware");
-
+const { generateAdminReport } = require("../controllers/adminController");
 // Users
 router.get("/users", authMiddleware, isAdmin, getUsers);
 
@@ -14,5 +14,6 @@ router.get("/reports", authMiddleware, isAdmin, getReports);
 
 // Admin dashboard stats
 router.get("/overview", authMiddleware, isAdmin, adminOverview);
+router.get("/generate-report", authMiddleware, isAdmin, generateAdminReport);
 
 module.exports = router;

@@ -1,63 +1,73 @@
+const PDFDocument = require("pdfkit");
 const Complaint = require("../models/Complaint");
 const User = require("../models/User");
-const AdminLog = require("../models/AdminLog");
 const Vote = require("../models/Vote");
 const Comment = require("../models/Comment");
-// Overview stats
-exports.adminOverview = async (req, res) => {
+
+// Generate Admin Report PDF
+exports.generateAdminReport = async (req, res) => {
   try {
+    // Fetch data
     const totalComplaints = await Complaint.countDocuments();
     const pendingReview = await Complaint.countDocuments({ status: "received" });
     const inProgress = await Complaint.countDocuments({ status: "in_progress" });
-    const resolvedToday = await Complaint.countDocuments({ status: "resolved" });
+    const resolved = await Complaint.countDocuments({ status: "resolved" });
     const activeUsers = await User.countDocuments();
 
-    res.json({ totalComplaints, pendingReview, inProgress, activeUsers, resolvedToday });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
+    const complaints = await Complaint.find().lean();
 
+    // PDF setup
+    const doc = new PDFDocument({ margin: 30, size: "A4" });
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Disposition", "attachment; filename=admin_report.pdf");
+    doc.pipe(res);
 
-// Get all users
-exports.getUsers = async (req, res) => {
-  try {
-    const users = await User.find().select("-password");
-    res.json(users);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
+    // Title
+    doc.fontSize(20).text("Admin Report", { align: "center" });
+    doc.moveDown();
 
-// Get all complaints (admins see all)
-exports.getAllComplaints = async (req, res) => {
-  try {
-    const complaints = await Complaint.find().populate("user_id", "name email");
-    res.json(complaints);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
+    // Overview Section
+    doc.fontSize(14).text("📊 System Overview", { underline: true });
+    doc.moveDown(0.5);
+    doc.fontSize(12).list([
+      `Total Complaints: ${totalComplaints}`,
+      `Pending Review: ${pendingReview}`,
+      `In Progress: ${inProgress}`,
+      `Resolved: ${resolved}`,
+      `Active Users: ${activeUsers}`,
+    ]);
+    doc.moveDown();
 
-// Get reports (votes + complaints)
-exports.getReports = async (req, res) => {
-  try {
-    const complaints = await Complaint.find()
-      .populate("user_id", "name email")
-      .lean();
+    // Complaints Table
+    doc.fontSize(14).text("📑 Complaints Summary", { underline: true });
+    doc.moveDown(0.5);
 
-    for (let c of complaints) {
-      c.upvotes = await Vote.countDocuments({ complaint_id: c._id, vote_type: "upvote" });
-      c.downvotes = await Vote.countDocuments({ complaint_id: c._id, vote_type: "downvote" });
+    complaints.slice(0, 20).forEach((c, i) => {
+      doc.fontSize(11).text(
+        `${i + 1}. ${c.title} | Status: ${c.status} | Description: ${c.description || "N/A"}`,
+        { align: "left" }
+      );
+      doc.moveDown(0.3);
+    });
 
-      // Include comment text + user
-      c.comments = await Comment.find({ complaint_id: c._id })
-        .populate("user_id", "name email")
-        .select("text createdAt user_id");
+    if (complaints.length > 20) {
+      doc.text(`...and ${complaints.length - 20} more complaints`, {
+        italic: true,
+        align: "left",
+      });
     }
 
-    res.json(complaints);
+    // Footer
+    doc.moveDown(2);
+    doc.fontSize(10).text(`Generated on ${new Date().toLocaleString()}`, {
+      align: "right",
+      opacity: 0.6,
+    });
+
+    // Finalize
+    doc.end();
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("Error generating report:", err);
+    res.status(500).json({ error: "Failed to generate report" });
   }
 };

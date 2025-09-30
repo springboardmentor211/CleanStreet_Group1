@@ -4,6 +4,8 @@ const ComplaintSchema = new mongoose.Schema({
   user_id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   title: String,
   description: String,
+  category: String,
+  ward: String,
   location_coords: {
     lat: Number,
     lng: Number
