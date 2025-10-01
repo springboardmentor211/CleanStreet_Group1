@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/client";
+import AdminReports from "./AdminReports";
 import "../styles/adminDashboard.css";
 
 export default function AdminDashboard() {
@@ -11,7 +12,7 @@ export default function AdminDashboard() {
   const [users, setUsers] = useState([]);
   const [loadingUsers, setLoadingUsers] = useState(false);
   const [reports, setReports] = useState([]);
-  const [loadingReports, setLoadingReports] = useState(false);
+  const [loadingReports, setLoadingReports] = useState(true);
   const [stats, setStats] = useState({
     totalComplaints: null,
     pendingReview: null,
@@ -43,12 +44,7 @@ export default function AdminDashboard() {
         .finally(() => setLoadingUsers(false));
     }
     if (activeSection === "reports") {
-      setLoadingReports(true);
-      api
-        .get("/admin/reports")
-        .then((res) => setReports(res.data || []))
-        .catch(() => setReports([]))
-        .finally(() => setLoadingReports(false));
+      fetchReports();
     }
   }, [activeSection]);
 
@@ -82,7 +78,17 @@ export default function AdminDashboard() {
   const handleViewComplaint = (id) => {
     navigate(`/complaints/${id}`);
   };
-
+  const fetchReports = async () => {
+    try {
+      setLoadingReports(true);
+      const res = await api.get("/complaints");
+      setReports(res.data);
+    } catch (err) {
+      console.error("Error fetching reports:", err);
+    } finally {
+      setLoadingReports(false);
+    }
+  };
   return (
     <div className="admin-dashboard">
       {/* Sidebar */}
@@ -230,38 +236,7 @@ export default function AdminDashboard() {
 
         {/* 🔹 Reports */}
         {activeSection === "reports" && (
-          <div>
-            <h1>All Reports</h1>
-            {loadingReports ? (
-              <p>Loading reports...</p>
-            ) : reports.length === 0 ? (
-              <p>No reports found.</p>
-            ) : (
-              reports.map((r) => (
-                <div
-                  key={r._id}
-                  className="report-card"
-                  onClick={() => handleViewComplaint(r._id)}
-                >
-                  <h3>{r.title}</h3>
-                  <p>{r.description}</p>
-                  <p>
-                    <b>Upvotes:</b> {r.upvotes} | <b>Downvotes:</b>{" "}
-                    {r.downvotes}
-                  </p>
-                  {r.comments && r.comments.length > 0 ? (
-                    r.comments.map((com, idx) => (
-                      <div key={idx} style={{ marginTop: 8, paddingLeft: 10 }}>
-                        <b>{com.user_id?.name || "Unknown"}:</b> {com.text}
-                      </div>
-                    ))
-                  ) : (
-                    <div>No comments</div>
-                  )}
-                </div>
-              ))
-            )}
-          </div>
+          <AdminReports /> // ✅ Show new Reports page instead of old cards
         )}
       </main>
     </div>
