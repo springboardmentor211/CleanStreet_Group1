@@ -6,6 +6,7 @@ const connectDB = require("./config/db");
 const userRoutes = require("./routes/user");
 const votesRoutes = require("./routes/votes");
 const adminRoutes = require("./routes/admin");
+const reportsRoutes = require("./routes/reports");
 
 dotenv.config();
 connectDB();
@@ -26,7 +27,7 @@ app.use("/api/comments", require("./routes/comments"));
 app.use("/api/user", userRoutes);
 app.use("/api/votes", votesRoutes);
 app.use("/api/admin", adminRoutes);
-
+app.use("/api/reports", reportsRoutes);
 
 
 
