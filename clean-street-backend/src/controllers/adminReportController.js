@@ -7,7 +7,7 @@ const Vote = require("../models/Vote");
 const fetchReportData = async () => {
   const totalComplaints = await Complaint.countDocuments();
   const pending = await Complaint.countDocuments({ status: "received" });
-  const inProgress = await Complaint.countDocuments({ status: "in_review" });
+  const inProgress = await Complaint.countDocuments({ status: "in_progress" });
   const resolved = await Complaint.countDocuments({ status: "resolved" });
   const users = await User.find().lean();
   const topContributors = await Complaint.aggregate([

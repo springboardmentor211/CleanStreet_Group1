@@ -1,11 +1,9 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState, useCallback } from "react";
 import api from "../api/client";
 import AdminReports from "./AdminReports";
 import "../styles/adminDashboard.css";
 
 export default function AdminDashboard() {
-  const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState("overview");
   const [complaints, setComplaints] = useState([]);
   const [loadingComplaints, setLoadingComplaints] = useState(false);
@@ -16,13 +14,35 @@ export default function AdminDashboard() {
   const [stats, setStats] = useState({
     totalComplaints: null,
     pendingReview: null,
-    inProgrss: null,
+    inProgress: null,
     resolvedToday: null,
     activeUsers: null,
   });
   const [loadingStats, setLoadingStats] = useState(true);
 
-  // 🔹 Fetch Data
+  // ✅ useCallback prevents re-creation & fixes ESLint dependency warning
+  const fetchReports = useCallback(async () => {
+    try {
+      setLoadingReports(true);
+      const res = await api.get("/complaints");
+      setReports(res.data);
+    } catch (err) {
+      console.error("Error fetching reports:", err);
+    } finally {
+      setLoadingReports(false);
+    }
+  }, []);
+
+  const loadComplaints = useCallback(() => {
+    setLoadingComplaints(true);
+    api
+      .get("/complaints")
+      .then((res) => setComplaints(res.data || []))
+      .catch(() => setComplaints([]))
+      .finally(() => setLoadingComplaints(false));
+  }, []);
+
+  // ✅ useEffect safely depends on stable callbacks
   useEffect(() => {
     if (activeSection === "overview") {
       setLoadingStats(true);
@@ -32,9 +52,7 @@ export default function AdminDashboard() {
         .catch(() => setStats({}))
         .finally(() => setLoadingStats(false));
     }
-    if (activeSection === "complaints") {
-      loadComplaints();
-    }
+    if (activeSection === "complaints") loadComplaints();
     if (activeSection === "users") {
       setLoadingUsers(true);
       api
@@ -43,26 +61,9 @@ export default function AdminDashboard() {
         .catch(() => setUsers([]))
         .finally(() => setLoadingUsers(false));
     }
-    if (activeSection === "reports") {
-      setLoadingReports(true);
-      api
-        .get("/admin/reports")
-        .then((res) => setReports(res.data || []))
-        .catch(() => setReports([]))
-        .finally(() => setLoadingReports(false));
-    }
-  }, [activeSection]);
+    if (activeSection === "reports") fetchReports();
+  }, [activeSection, fetchReports, loadComplaints]);
 
-  const loadComplaints = () => {
-    setLoadingComplaints(true);
-    api
-      .get("/complaints")
-      .then((res) => setComplaints(res.data || []))
-      .catch(() => setComplaints([]))
-      .finally(() => setLoadingComplaints(false));
-  };
-
-  // 🔹 Complaint Actions
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this complaint?"))
       return;
@@ -73,7 +74,7 @@ export default function AdminDashboard() {
   const handleStatusChange = async (id, newStatus) => {
     try {
       await api.patch(`/complaints/${id}/status`, { status: newStatus });
-      loadComplaints(); // reload complaints after update
+      loadComplaints();
     } catch (err) {
       console.error("Status update failed:", err);
       alert("Failed to update complaint status");
@@ -81,7 +82,7 @@ export default function AdminDashboard() {
   };
 
   const handleViewComplaint = (id) => {
-    navigate(`/complaints/${id}`);
+    console.log("Clicked complaint:", id);
   };
 
   return (
@@ -125,8 +126,7 @@ export default function AdminDashboard() {
             <h1>System Overview</h1>
             <div className="cards">
               <div className="card">
-                📋{" "}
-                <p>{loadingStats ? "..." : stats.totalComplaints ?? "N/A"}</p>
+                📋 <p>{loadingStats ? "..." : stats.totalComplaints ?? "N/A"}</p>
                 <span>Total Complaints</span>
               </div>
               <div className="card">
@@ -143,7 +143,7 @@ export default function AdminDashboard() {
               </div>
               <div className="card">
                 ✔️ <p>{loadingStats ? "..." : stats.resolvedToday ?? "N/A"}</p>
-                <span>Resolved </span>
+                <span>Resolved</span>
               </div>
             </div>
           </div>
@@ -230,7 +230,9 @@ export default function AdminDashboard() {
         )}
 
         {/* 🔹 Reports */}
-{activeSection === "reports" && <AdminReports />}
+        {activeSection === "reports" && (
+  <AdminReports reports={reports} loadingReports={loadingReports} />
+)}
 
       </main>
     </div>

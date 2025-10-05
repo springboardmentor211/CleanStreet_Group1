@@ -8,11 +8,11 @@ const PDFDocument = require("pdfkit");
 // ✅ Admin Overview (stats + analytics for dashboard)
 exports.adminOverview = async (req, res) => {
   try {
-    const totalUsers = await User.countDocuments();
+    const activeUsers = await User.countDocuments();
     const totalComplaints = await Complaint.countDocuments();
-    const resolvedComplaints = await Complaint.countDocuments({ status: "resolved" });
+    const resolved= await Complaint.countDocuments({ status: "resolved" });
     const inProgress = await Complaint.countDocuments({ status: "in_progress" });
-    const pendingComplaints = await Complaint.countDocuments({ status: "received" });
+    const pendingReview = await Complaint.countDocuments({ status: "received" });
 
     // 🔹 Top 5 complaints by upvotes
     const topComplaints = await Complaint.find()
@@ -40,11 +40,11 @@ exports.adminOverview = async (req, res) => {
     }
 
     res.json({
-      totalUsers,
+      activeUsers,
       totalComplaints,
-      resolvedComplaints,
+      resolved,
       inProgress,
-      pendingComplaints,
+      pendingReview,
       topComplaints,
       complaintTrends: last7Days,
     });
