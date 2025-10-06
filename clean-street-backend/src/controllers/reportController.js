@@ -11,7 +11,7 @@ exports.getSummary = async (req, res) => {
   try {
     const totalComplaints = await Complaint.countDocuments();
     const pending = await Complaint.countDocuments({ status: "received" });
-    const inProgress = await Complaint.countDocuments({ status: "in-progress" });
+    const inProgress = await Complaint.countDocuments({ status: "in_progress" });
     const resolved = await Complaint.countDocuments({ status: "resolved" });
     const totalUsers = await User.countDocuments();
 
@@ -21,15 +21,38 @@ exports.getSummary = async (req, res) => {
   }
 };
 
-// ✅ 2. Complaint Categories
+
+// ✅ 2. Complaint Categories (supports both 'category' and 'type')
 exports.getCategoryDistribution = async (req, res) => {
   try {
     const data = await Complaint.aggregate([
-      { $group: { _id: "$category", value: { $sum: 1 } } },
+      {
+        $group: {
+          _id: {
+            $ifNull: ["$category", "$type"], // ✅ use 'type' if 'category' not present
+          },
+          value: { $sum: 1 },
+        },
+      },
       { $project: { name: "$_id", value: 1, _id: 0 } },
     ]);
-    res.json(data);
+
+    // ✅ Ensure all default categories appear, even if 0
+    const defaultCategories = [
+      "Pothole",
+      "Streetlight",
+      "Garbage",
+      "Water Supply",
+    ];
+
+    const mergedData = defaultCategories.map((cat) => {
+      const found = data.find((d) => d.name === cat);
+      return { name: cat, value: found ? found.value : 0 };
+    });
+
+    res.json(mergedData);
   } catch (err) {
+    console.error("Error in getCategoryDistribution:", err);
     res.status(500).json({ error: err.message });
   }
 };
@@ -48,17 +71,26 @@ exports.getTopAreas = async (req, res) => {
   }
 };
 
-// ✅ 4. Trends (daily)
+// ✅ 4. Trends (daily trends by created date)
 exports.getTrends = async (req, res) => {
   try {
-    const { start, end } = req.query;
-    const match = {};
-    if (start && end) {
-      match.createdAt = { $gte: new Date(start), $lte: new Date(end) };
+    const { start, end, category } = req.query;
+    const filter = {};
+
+    // Date range filtering (optional)
+    if (start || end) {
+      filter.createdAt = {};
+      if (start) filter.createdAt.$gte = new Date(start);
+      if (end) filter.createdAt.$lte = new Date(end);
+    }
+
+    // Filter by category/type if provided
+    if (category) {
+      filter.$or = [{ category }, { type: category }];
     }
 
     const data = await Complaint.aggregate([
-      { $match: match },
+      { $match: filter },
       {
         $group: {
           _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
@@ -68,11 +100,13 @@ exports.getTrends = async (req, res) => {
       { $sort: { _id: 1 } },
     ]);
 
-    res.json(data.map(d => ({ date: d._id, count: d.count })));
+    res.json(data.map((d) => ({ date: d._id, count: d.count })));
   } catch (err) {
+    console.error("Error in getTrends:", err);
     res.status(500).json({ error: err.message });
   }
 };
+
 
 
 // ✅ 5. Top Upvoted
@@ -155,18 +189,29 @@ exports.getResolutionStats = async (req, res) => {
   }
 };
 
-// ✅ 9. Map Points
+// ✅ 9. Map Points (safe fallback for missing locations)
 exports.getMapPoints = async (req, res) => {
   try {
-    const data = await Complaint.find({}, "location.lat location.lng");
+    const data = await Complaint.find({}, "location type category").lean();
+
     const points = data
-      .filter(c => c.location && c.location.lat && c.location.lng)
-      .map(c => ({ lat: c.location.lat, lng: c.location.lng }));
+      .filter(
+        (c) => c.location && c.location.lat && c.location.lng // Ensure valid location
+      )
+      .map((c) => ({
+        lat: c.location.lat,
+        lng: c.location.lng,
+        category: c.category || c.type || "Unknown",
+      }));
+
     res.json(points);
   } catch (err) {
+    console.error("Error in getMapPoints:", err);
     res.status(500).json({ error: err.message });
   }
 };
+
+
 
 
 // ✅ 10. Export (PDF, Excel, CSV)
