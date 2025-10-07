@@ -1,10 +1,18 @@
 const express = require("express");
-const { getMetrics, logAction } = require("../controllers/adminController");
-const auth = require("../middleware/auth");
-const checkRole = require("../middleware/roles");
 const router = express.Router();
+const { adminOverview, getUsers, getAllComplaints, getReports } = require("../controllers/adminController");
+const { authMiddleware, isAdmin } = require("../middleware/authMiddleware");
 
-router.get("/metrics", auth, checkRole("admin"), getMetrics);
-router.post("/log", auth, checkRole("admin"), logAction);
+// Users
+router.get("/users", authMiddleware, isAdmin, getUsers);
+
+// Complaints
+router.get("/complaints", authMiddleware, isAdmin, getAllComplaints);
+
+// Reports (logs)
+router.get("/reports", authMiddleware, isAdmin, getReports);
+
+// Admin dashboard stats
+router.get("/overview", authMiddleware, isAdmin, adminOverview);
 
 module.exports = router;

@@ -1,8 +1,10 @@
 const express = require("express");
 const { voteComplaint } = require("../controllers/voteController");
-const auth = require("../middleware/auth");
+const { authMiddleware } = require("../middleware/authMiddleware");
+
 const router = express.Router();
 
-router.post("/", auth, voteComplaint);
+// Cast or update a vote
+router.post("/", authMiddleware, voteComplaint);
 
 module.exports = router;

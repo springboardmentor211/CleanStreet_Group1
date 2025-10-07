@@ -5,7 +5,12 @@ import { getComplaints } from "../api/complaints";
 import "../styles/dashboard.css";
 
 export default function Dashboard() {
-  const [metrics, setMetrics] = useState({ total: 0, pending: 0, inReview: 0, resolved: 0 });
+  const [metrics, setMetrics] = useState({
+    total: 0,
+    pending: 0,
+    inReview: 0,
+    resolved: 0,
+  });
   const [complaints, setComplaints] = useState([]);
 
   useEffect(() => {
@@ -17,9 +22,9 @@ export default function Dashboard() {
     getComplaints().then((data) => {
       setMetrics({
         total: data.length,
-        pending: data.filter(c => c.status === "received").length,
-        inReview: data.filter(c => c.status === "in_review").length,
-        resolved: data.filter(c => c.status === "resolved").length
+        pending: data.filter((c) => c.status === "received").length,
+        inReview: data.filter((c) => c.status === "in_progress").length,
+        resolved: data.filter((c) => c.status === "resolved").length,
       });
       setComplaints(data);
     });
@@ -53,39 +58,53 @@ export default function Dashboard() {
       <div className="dashboard-content">
         <div className="recent">
           <h3>Recent Complaints</h3>
-          {complaints.slice(-5).reverse().map((c) => (
-            <div key={c._id} className="complaint-card">
-              <h4>{c.title}</h4>
-              <p>{c.description.substring(0, 80)}...</p>
-              <p className="status">Status: {c.status}</p>
+          {complaints
+            .slice(-5)
+            .reverse()
+            .map((c) => (
+              <div key={c._id} className="complaint-card">
+                <h4>{c.title}</h4>
+                <p>{c.description.substring(0, 80)}...</p>
+                <p className="status">Status: {c.status}</p>
 
-              {/* ✅ Show complaint photos */}
-              {c.photos && c.photos.length > 0 && (
-                <div className="complaint-photos">
-                  {c.photos.map((_, index) => (
-                    <img
-                      key={index}
-                      src={`http://localhost:5000/api/complaints/${c._id}/photo/${index}`}
-                      alt={`Complaint ${index}`}
-                      className="complaint-photo"
-                    />
-                  ))}
+                <div className="votes">
+                  <span>👍 {c.upvotes || 0}</span>
+                  <span>👎 {c.downvotes || 0}</span>
                 </div>
-              )}
 
-              <Link to={`/complaints/${c._id}`} className="view-btn">
-                View Details
-              </Link>
-            </div>
-          ))}
+                {/* ✅ Show complaint photos */}
+                {c.photos && c.photos.length > 0 && (
+                  <div className="complaint-photos">
+                    {c.photos.map((_, index) => (
+                      <img
+                        key={index}
+                        src={`http://localhost:5000/api/complaints/${c._id}/photo/${index}`}
+                        alt={`Complaint ${index}`}
+                        className="complaint-photo"
+                      />
+                    ))}
+                  </div>
+                )}
+
+                <Link to={`/complaints/${c._id}`} className="view-btn">
+                  View Details
+                </Link>
+              </div>
+            ))}
         </div>
 
         {/* Quick Actions */}
         <div className="quick-actions">
           <h3>Quick Actions</h3>
-          <Link to="/new-complaint"><button>+ Report New Issue</button></Link>
-          <Link to="/complaints"><button>View All Complaints</button></Link>
-          <button>Issue Map</button>
+          <Link to="/new-complaint">
+            <button>+ Report New Issue</button>
+          </Link>
+          <Link to="/complaints">
+            <button>View All Complaints</button>
+          </Link>
+          <Link to="/map">
+            <button>Issue Map</button>
+          </Link>
         </div>
       </div>
     </div>
