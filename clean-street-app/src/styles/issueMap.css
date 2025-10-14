@@ -1,0 +1,9 @@
+.issue-map-container {
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+
+.issue-map-container h2 {
+  margin-bottom: 15px;
+}

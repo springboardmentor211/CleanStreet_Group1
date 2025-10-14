@@ -25,7 +25,8 @@ export default function Navbar() {
             <Link to="/dashboard">Dashboard</Link>
             <Link to="/new-complaint">Report Issue</Link>
             <Link to="/complaints">View Complaints</Link>
-            {user.role === "admin" && <Link to="/admin">Admin</Link>}
+            {/* Only show Admin Dashboard link if user is admin */}
+            {user.role === "admin" && <Link to="/admin-dashboard">Admin Dashboard</Link>}
             <button className="logout-btn" onClick={handleLogout}>
               Logout
             </button>
@@ -46,7 +47,10 @@ export default function Navbar() {
           </>
         ) : (
           <>
-            <Link to="/login" className="btn-outline">
+            <Link to="/admin-login" className="btn-outline">
+              Admin Login
+            </Link>
+            <Link to="/login" className="btn-outline" style={{marginLeft: '5px'}}>
               Login
             </Link>
             <Link to="/register" className="btn-primary">

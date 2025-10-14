@@ -1,4 +1,5 @@
 const Complaint = require("../models/Complaint");
+const Vote = require("../models/Vote");
 
 // Create complaint
 exports.createComplaint = async (req, res) => {
@@ -53,25 +54,51 @@ exports.getComplaint = async (req, res) => {
   try {
     const complaint = await Complaint.findById(req.params.id)
       .populate("user_id", "name email role");
-    res.json(complaint);
+
+    if (!complaint) {
+      return res.status(404).json({ error: "Complaint not found" });
+    }
+
+    // Count votes
+    const upvotes = await Vote.countDocuments({ complaint_id: complaint._id, vote_type: "upvote" });
+    const downvotes = await Vote.countDocuments({ complaint_id: complaint._id, vote_type: "downvote" });
+
+    res.json({
+      ...complaint.toObject(),
+      votes: { upvotes, downvotes }
+    });
   } catch (err) {
-    res.status(404).json({ error: "Complaint not found" });
+    res.status(500).json({ error: err.message });
   }
 };
 
 // Update status (for admin/volunteer)
+// Update complaint status (Admin only)
 exports.updateComplaintStatus = async (req, res) => {
   try {
+    const { status } = req.body;
+
+    // Allowed statuses
+    const allowed = ["received", "in_progress", "resolved"];
+    if (!allowed.includes(status)) {
+      return res.status(400).json({ msg: "Invalid status" });
+    }
+
     const complaint = await Complaint.findByIdAndUpdate(
       req.params.id,
-      { status: req.body.status, updated_at: new Date() },
+      { status, updated_at: Date.now() },
       { new: true }
-    );
-    res.json(complaint);
+    ).populate("user_id", "name email");
+
+    if (!complaint) return res.status(404).json({ msg: "Complaint not found" });
+
+    res.json({ msg: "Status updated", complaint });
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    console.error("Update complaint error:", err);
+    res.status(500).json({ error: "Server error" });
   }
 };
+
 
 // Get a specific photo by complaint ID and index
 exports.getComplaintPhoto = async (req, res) => {
@@ -92,3 +119,23 @@ exports.getComplaintPhoto = async (req, res) => {
   }
 };
 
+// Delete complaint (Admin only for safety)
+exports.deleteComplaint = async (req, res) => {
+  try {
+    const complaint = await Complaint.findById(req.params.id);
+    if (!complaint) {
+      return res.status(404).json({ msg: "Complaint not found" });
+    }
+
+    // Optional: check if user is admin
+    if (req.user.role !== "admin") {
+      return res.status(403).json({ msg: "Only admins can delete complaints" });
+    }
+
+    await complaint.deleteOne();
+    res.json({ msg: "Complaint deleted successfully" });
+  } catch (err) {
+    console.error("Delete complaint error:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
