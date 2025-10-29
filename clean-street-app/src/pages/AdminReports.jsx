@@ -325,8 +325,8 @@ export default function AdminReports() {
       <div className="export-buttons">
   <h3>Export Full Reports</h3>
   <button onClick={() => handleExport("pdf")}>📄 Export PDF</button>
-  <button onClick={() => handleExport("excel")}>📊 Export Excel</button>
-  <button onClick={() => handleExport("csv")}>📑 Export CSV</button>
+  {/* <button onClick={() => handleExport("excel")}>📊 Export Excel</button> */}
+  <button onClick={() => handleExport("csv")}>📊 Export Exel</button>
 </div>
 
     </div>

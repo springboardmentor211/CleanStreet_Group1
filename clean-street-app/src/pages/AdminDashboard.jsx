@@ -14,7 +14,6 @@ import {
   Legend,
 } from "recharts";
 
-
 export default function AdminDashboard() {
   const [activeSection, setActiveSection] = useState("overview");
   const [complaints, setComplaints] = useState([]);
@@ -24,14 +23,14 @@ export default function AdminDashboard() {
   const [reports, setReports] = useState([]);
   const [loadingReports, setLoadingReports] = useState(false);
   const [stats, setStats] = useState({
-  totalComplaints: null,
-  pendingReview: null,
-  inProgress: null,
-  resolvedToday: null,
-  activeUsers: null,
-  topComplaints: [],
-  complaintTrends: [],
-});
+    totalComplaints: null,
+    pendingReview: null,
+    inProgress: null,
+    resolved: null,
+    activeUsers: null,
+    topComplaints: [],
+    complaintTrends: [],
+  });
 
   const [loadingStats, setLoadingStats] = useState(true);
 
@@ -137,69 +136,69 @@ export default function AdminDashboard() {
       <main className="main-content">
         {/* 🔹 Overview */}
         {activeSection === "overview" && (
-  <div>
-    <h1>System Overview</h1>
+          <div>
+            <h1>System Overview</h1>
 
-    <div className="cards">
-      <div className="card">
-        📋 <p>{loadingStats ? "..." : stats.totalComplaints ?? "N/A"}</p>
-        <span>Total Complaints</span>
-      </div>
-      <div className="card">
-        🕒 <p>{loadingStats ? "..." : stats.pendingReview ?? "N/A"}</p>
-        <span>Pending Review</span>
-      </div>
-      <div className="card">
-        🔄 <p>{loadingStats ? "..." : stats.inProgress ?? "N/A"}</p>
-        <span>In Progress</span>
-      </div>
-      <div className="card">
-        ✔️ <p>{loadingStats ? "..." : stats.resolvedToday ?? "N/A"}</p>
-        <span>Resolved Today</span>
-      </div>
-      <div className="card">
-        👥 <p>{loadingStats ? "..." : stats.activeUsers ?? "N/A"}</p>
-        <span>Active Users</span>
-      </div>
-    </div>
+            <div className="cards">
+              <div className="card">
+                📋{" "}
+                <p>{loadingStats ? "..." : stats.totalComplaints ?? "N/A"}</p>
+                <span>Total Complaints</span>
+              </div>
+              <div className="card">
+                🕒 <p>{loadingStats ? "..." : stats.pendingReview ?? "N/A"}</p>
+                <span>Pending Review</span>
+              </div>
+              <div className="card">
+                🔄 <p>{loadingStats ? "..." : stats.inProgress ?? "N/A"}</p>
+                <span>In Progress</span>
+              </div>
+              <div className="card">
+                ✔️ <p>{loadingStats ? "..." : stats.resolved ?? "N/A"}</p>
+                <span>Resolved </span>
+              </div>
+              <div className="card">
+                👥 <p>{loadingStats ? "..." : stats.activeUsers ?? "N/A"}</p>
+                <span>Active Users</span>
+              </div>
+            </div>
 
-    {/* 📈 Complaint Trend Graph */}
-    <div className="chart-section">
-      <h3>📈 Complaint Trends (Last 7 Days)</h3>
-      <LineChart
-        width={600}
-        height={250}
-        data={stats.complaintTrends}
-        margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="day" />
-        <YAxis />
-        <Tooltip />
-        <Line type="monotone" dataKey="complaints" stroke="#4caf50" />
-      </LineChart>
-    </div>
+            {/* 📈 Complaint Trend Graph */}
+            <div className="chart-section">
+              <h3>📈 Complaint Trends (Last 7 Days)</h3>
+              <LineChart
+                width={600}
+                height={250}
+                data={stats.complaintTrends}
+                margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="day" />
+                <YAxis />
+                <Tooltip />
+                <Line type="monotone" dataKey="complaints" stroke="#4caf50" />
+              </LineChart>
+            </div>
 
-    {/* 🏆 Top Complaints by Upvotes */}
-    <div className="chart-section">
-      <h3>🏆 Top 5 Complaints (By Upvotes)</h3>
-      <BarChart
-        width={600}
-        height={250}
-        data={stats.topComplaints}
-        margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="title" />
-        <YAxis />
-        <Tooltip />
-        <Legend />
-        <Bar dataKey="upvotes" fill="#2196f3" />
-      </BarChart>
-    </div>
-  </div>
-)}
-
+            {/* 🏆 Top Complaints by Upvotes */}
+            <div className="chart-section">
+              <h3>🏆 Top 5 Complaints (By Upvotes)</h3>
+              <BarChart
+                width={600}
+                height={250}
+                data={stats.topComplaints}
+                margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="title" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="upvotes" fill="#2196f3" />
+              </BarChart>
+            </div>
+          </div>
+        )}
 
         {/* 🔹 Complaints */}
         {activeSection === "complaints" && (
@@ -283,9 +282,8 @@ export default function AdminDashboard() {
 
         {/* 🔹 Reports */}
         {activeSection === "reports" && (
-  <AdminReports reports={reports} loadingReports={loadingReports} />
-)}
-
+          <AdminReports reports={reports} loadingReports={loadingReports} />
+        )}
       </main>
     </div>
   );

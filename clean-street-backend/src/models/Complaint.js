@@ -20,8 +20,6 @@ const ComplaintSchema = new mongoose.Schema({
   landmark: String,
   assigned_to: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   status: { type: String, enum: ["received", "in_review", "resolved"], default: "received" },
-  created_at: { type: Date, default: Date.now },
-  updated_at: { type: Date, default: Date.now }
-});
+}, { timestamps: true });
 
 module.exports = mongoose.model("Complaint", ComplaintSchema);

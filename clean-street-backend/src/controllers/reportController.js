@@ -28,16 +28,13 @@ exports.getCategoryDistribution = async (req, res) => {
     const data = await Complaint.aggregate([
       {
         $group: {
-          _id: {
-            $ifNull: ["$category", "$type"], // ✅ use 'type' if 'category' not present
-          },
+          _id: "$category",
           value: { $sum: 1 },
         },
       },
       { $project: { name: "$_id", value: 1, _id: 0 } },
     ]);
 
-    // ✅ Ensure all default categories appear, even if 0
     const defaultCategories = [
       "Pothole",
       "Streetlight",
@@ -56,6 +53,7 @@ exports.getCategoryDistribution = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
 
 // ✅ 3. Top Areas
 exports.getTopAreas = async (req, res) => {
@@ -109,7 +107,7 @@ exports.getTrends = async (req, res) => {
 
 
 
-// ✅ 5. Top Upvoted
+// ✅ 5. Top Upvoted Complaints
 exports.getTopUpvoted = async (req, res) => {
   try {
     const data = await Vote.aggregate([
@@ -118,14 +116,27 @@ exports.getTopUpvoted = async (req, res) => {
       { $sort: { upvotes: -1 } },
       { $limit: 5 },
     ]);
-    const withComplaints = await Complaint.populate(data, { path: "_id", select: "title" });
-    res.json(withComplaints.map(d => ({ _id: d._id._id, complaint: d._id, upvotes: d.upvotes })));
+
+    // Fetch complaint titles manually
+    const results = await Promise.all(
+      data.map(async (item) => {
+        const complaint = await Complaint.findById(item._id).select("title");
+        return {
+          complaintId: item._id,
+          title: complaint ? complaint.title : "Unknown",
+          upvotes: item.upvotes,
+        };
+      })
+    );
+
+    res.json(results);
   } catch (err) {
+    console.error("Error in getTopUpvoted:", err);
     res.status(500).json({ error: err.message });
   }
 };
 
-// ✅ 6. Top Downvoted
+// ✅ 6. Top Downvoted Complaints
 exports.getTopDownvoted = async (req, res) => {
   try {
     const data = await Vote.aggregate([
@@ -134,27 +145,55 @@ exports.getTopDownvoted = async (req, res) => {
       { $sort: { downvotes: -1 } },
       { $limit: 5 },
     ]);
-    const withComplaints = await Complaint.populate(data, { path: "_id", select: "title" });
-    res.json(withComplaints.map(d => ({ _id: d._id._id, complaint: d._id, downvotes: d.downvotes })));
+
+    const results = await Promise.all(
+      data.map(async (item) => {
+        const complaint = await Complaint.findById(item._id).select("title");
+        return {
+          complaintId: item._id,
+          title: complaint ? complaint.title : "Unknown",
+          downvotes: item.downvotes,
+        };
+      })
+    );
+
+    res.json(results);
   } catch (err) {
+    console.error("Error in getTopDownvoted:", err);
     res.status(500).json({ error: err.message });
   }
 };
 
-// ✅ 7. Top Contributors
+
+// ✅ 7. Top Contributors (safe fix)
 exports.getTopContributors = async (req, res) => {
   try {
     const data = await Complaint.aggregate([
+      { $match: { user_id: { $ne: null } } }, // ✅ ignore complaints without user_id
       { $group: { _id: "$user_id", complaints: { $sum: 1 } } },
       { $sort: { complaints: -1 } },
       { $limit: 5 },
     ]);
+
+    // Populate user data safely
     const withUsers = await User.populate(data, { path: "_id", select: "name" });
-    res.json(withUsers.map(d => ({ userId: d._id._id, name: d._id.name, complaints: d.complaints })));
+
+    // Return clean array
+    const result = withUsers
+      .filter(d => d._id && d._id.name) // ✅ skip null users
+      .map(d => ({
+        userId: d._id._id,
+        name: d._id.name,
+        complaints: d.complaints
+      }));
+
+    res.json(result);
   } catch (err) {
+    console.error("Error in getTopContributors:", err);
     res.status(500).json({ error: err.message });
   }
 };
+
 
 // ✅ 8. Resolution Stats
 exports.getResolutionStats = async (req, res) => {
